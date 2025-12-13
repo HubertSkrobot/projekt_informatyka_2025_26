@@ -2,7 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
-//obs≥uga g≥Ûwnego menu
+#include "GameState.h"
+#include "Game.h"
+//obs≈Çuga g≈Ç√≥wnego menu
 class Menu {
 private:
     std::vector<std::string> items;
@@ -20,7 +22,7 @@ public:
     int getSelectedItem() const { return selectedItem; }
 
     void draw(sf::RenderTarget& target);
-    void handleEvent(sf::Event& event);
+    GameState handleEvent(sf::Event& event, Game& game);  
 
 private:
     void updateColors();
