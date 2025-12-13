@@ -18,30 +18,12 @@ int main()
         sf::Event event;
         while (window.pollEvent(event)) { //przyciski na klawiaturze
             if (event.type == sf::Event::Closed) window.close();
+
             if (currentState == GameState::Menu) {
-                menu.handleEvent(event);
-                if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::Enter) {
-                        if (menu.getSelectedItem() == 0) {
-                            game.reset();
-                            currentState = GameState::Playing;
-                        }
-                        if (menu.getSelectedItem() == 1) {
-                            game.load("zapis.txt");
-                            currentState = GameState::Playing;
-                        }
-                        if (menu.getSelectedItem() == 2) currentState = GameState::Exiting;
-                    }
-                }
+                currentState = menu.handleEvent(event, game); // Przeniesiona logika menu
             }
             else if (currentState == GameState::Playing) {
-                if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::Escape) currentState = GameState::Menu;
-                    if (event.key.code == sf::Keyboard::P) game.save("zapis.txt");
-                    if (event.key.code == sf::Keyboard::R) {
-                        game.reset();
-                    }
-                }
+                currentState = game.handleEvent(event); // Przeniesiona logika sterowania w grze do game
             }
         }
 
