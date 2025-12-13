@@ -5,17 +5,10 @@
 #include "Ball.h"
 #include "Paddle.h"
 #include "klocek.h"
+#include "GameState.h" 
 
 class Game {
 private:
-    Ball ball;
-    Paddle paddle;
-    std::vector<Brick> bricks;
-    int score;
-    bool gameOver; //ekran przegranej
-    bool gameWon; //wygranej
-    sf::Vector2f brickSize;
-
     sf::Font font;
     sf::Text scoreLabel;
     sf::Text gameOverText;
@@ -26,11 +19,18 @@ private:
     sf::RectangleShape winRect;
 
 public:
+    Ball ball;
+    Paddle paddle;
+    std::vector<Brick> bricks;
+    int score;
+    bool gameOver; //ekran przegranej
+    bool gameWon; //wygranej
+    sf::Vector2f brickSize;
     Game();
+    GameState handleEvent(sf::Event& event); 
     void update(sf::Time dt, sf::Vector2f windowSize);
     void render(sf::RenderTarget& target);
     void reset();
-    void save(const std::string& filename);
-    void load(const std::string& filename);
+
     bool isGameOver() const { return gameOver; } //sprawdzenie czy pilka spadla
 };
