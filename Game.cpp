@@ -15,8 +15,8 @@ Game::Game()
     scoreLabel.setCharacterSize(18);
     scoreLabel.setFillColor(sf::Color::White);
     scoreLabel.setPosition(10.f, 10.f);
-       
-//GAME OVER ekran
+
+    //GAME OVER ekran
     gameOverRect.setSize(sf::Vector2f(400.f, 100.f));
     gameOverRect.setFillColor(sf::Color::Red);
     gameOverRect.setOrigin(gameOverRect.getSize() / 2.f);
@@ -54,6 +54,21 @@ Game::Game()
     reset();
 }
 
+GameState Game::handleEvent(sf::Event& event) { //klawisze podczas gry
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Escape) {
+            return GameState::Menu; // Powrót do menu po esc
+        }
+        if (event.key.code == sf::Keyboard::P) {
+            saveGame("zapis.txt", ball, paddle, bricks, score); // Zapis stanu gry po P
+        }
+        if (event.key.code == sf::Keyboard::R) {
+            reset(); // Reset gry po R
+        }
+    }
+    return GameState::Playing;
+}
+
 void Game::reset()//resetowanie gry
 {
     ball = Ball({ 400.f,400.f }, 15.f, { 150.f,150.f });
@@ -83,6 +98,7 @@ void Game::update(sf::Time dt, sf::Vector2f windowSize)
     for (size_t i = 0; i < bricks.size();) { //sprawdzanie kolizji z klockami
         sf::FloatRect brickBounds = bricks[i].getBounds();
         if (ballBounds.intersects(brickBounds)) {
+            // Logika kolizji
             if (ballPos.y > brickBounds.top + brickBounds.height / 2.f) {
                 ball.setPosition({ ballPos.x, brickBounds.top + brickBounds.height + radius });
             }
@@ -130,40 +146,4 @@ void Game::render(sf::RenderTarget& target)
         target.draw(winText);
         target.draw(restartText);
     }
-}
-
-    //zapis stanu gry do pliku
-void Game::save(const std::string& filename)
-{
-    std::ofstream file(filename);
-    if (!file) return;
-    sf::Vector2f bPos = ball.getPosition();
-    sf::Vector2f bVel = ball.getVelocity();
-    sf::Vector2f pPos = paddle.getPosition();
-    file << bPos.x << " " << bPos.y << " " << bVel.x << " " << bVel.y << " "
-        << pPos.x << " " << pPos.y << " " << score << " " << bricks.size() << "\n";
-    for (auto& br : bricks) {
-        sf::Vector2f pos = br.getPosition();
-        int hp = br.getHP();
-        file << pos.x << " " << pos.y << " " << hp << "\n";
-    }
-}
-                                        
-//wczytanie stanu gey do pliku
-void Game::load(const std::string& filename)
-{
-    std::ifstream file(filename);
-    if (!file) return;
-    float bx, by, vx, vy, px, py;
-    int nBricks;
-    file >> bx >> by >> vx >> vy >> px >> py >> score >> nBricks;
-    ball = Ball({ bx,by }, 15.f, { vx,vy });
-    paddle.setPosition({ px,py });
-    bricks.clear();
-    for (int i = 0; i < nBricks; i++) {
-        float x, y; int hp;
-        file >> x >> y >> hp;
-        bricks.emplace_back(sf::Vector2f(x, y), brickSize, hp);
-    }
-    gameOver = false;
 }
