@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "GameState.h"
 
 Menu::Menu(float width, float height)
     : selectedItem(0), startX(width / 2.f), startY(height / 2.f)
@@ -62,7 +63,7 @@ GameState Menu::handleEvent(sf::Event& event, Game& game) {
             if (selectedItem == 2) return GameState::Exiting;
         }
     }
-    return GameState::Menu; 
+    return GameState::Menu;
 }
 
 void Menu::updateColors() { //wybrana opcja podswietla sie na zielono, reszta na bialo
